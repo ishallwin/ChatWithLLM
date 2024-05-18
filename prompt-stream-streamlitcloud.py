@@ -69,9 +69,8 @@ def append_and_show(role, content, container):
 
 # Streamlit 应用程序入口
 def main():
-    try:
-        if not check_password():
-            return
+    if not check_password():
+        return
 
 # 如果还没有消息，则添加第一条提示消息
 if 'messages' not in st.session_state:
