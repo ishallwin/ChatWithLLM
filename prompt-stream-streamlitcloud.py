@@ -4,6 +4,7 @@ from zhipuai import ZhipuAI
 import streamlit as st
 
 #_ = load_dotenv(find_dotenv())
+#api_key = os.environ.get('ZHIPU_API_KEY')
 api_key = st.secrets["api_key"]
 if api_key is None:
     raise ValueError("API Key is not set in the .env file")
@@ -20,7 +21,7 @@ def get_stream_completion(prompt, model="glm-4", temperature=0.01):
     return response
 
 def check_password():      
-    # 预设的密码  
+    # 取得预设的密码  
     correct_password = st.secrets["password"] 
     #返回值
     ret = False 
@@ -75,12 +76,12 @@ def main():
     # 如果还没有消息，则添加第一条提示消息
     if 'messages' not in st.session_state:
         st.session_state.messages = [{"role": "assistant", "content": "我是你的信息助手，请问你查询什么信息？"}]
-    
+
     # 将会话中的messages列表中的消息全部显示出来
     for msg in st.session_state.messages:
         container = st.empty()  # 创建一个新的动态区域
         dspMessage(msg["role"], msg["content"], container)
-    
+
     # 接受用户输入的提示词，并调用大模型API获得反馈
     if prompt := st.chat_input():
         user_container = st.empty()  # 用户消息的动态区域
@@ -106,3 +107,7 @@ def main():
         
         # 保存并显示已经完成的回复
         append_and_show("assistant", st.session_state[response_key], assistant_container)
+
+#运行Streamlit应用程序
+if __name__ == "__main__":
+    main()
