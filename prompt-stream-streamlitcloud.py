@@ -72,37 +72,37 @@ def main():
     if not check_password():
         return
 
-# 如果还没有消息，则添加第一条提示消息
-if 'messages' not in st.session_state:
-    st.session_state.messages = [{"role": "assistant", "content": "我是你的信息助手，请问你查询什么信息？"}]
-
-# 将会话中的messages列表中的消息全部显示出来
-for msg in st.session_state.messages:
-    container = st.empty()  # 创建一个新的动态区域
-    dspMessage(msg["role"], msg["content"], container)
-
-# 接受用户输入的提示词，并调用大模型API获得反馈
-if prompt := st.chat_input():
-    user_container = st.empty()  # 用户消息的动态区域
-    assistant_container = st.empty()  # 助手消息的动态区域
+    # 如果还没有消息，则添加第一条提示消息
+    if 'messages' not in st.session_state:
+        st.session_state.messages = [{"role": "assistant", "content": "我是你的信息助手，请问你查询什么信息？"}]
     
-    append_and_show("user", prompt, user_container)
+    # 将会话中的messages列表中的消息全部显示出来
+    for msg in st.session_state.messages:
+        container = st.empty()  # 创建一个新的动态区域
+        dspMessage(msg["role"], msg["content"], container)
     
-    # 初始化回复内容为空
-    assistant_response = ""
-    
-    # 在会话状态中创建或重置assistant的响应
-    response_key = "assistant_response"
-    st.session_state[response_key] = ""
-    
-    # 获取流式输出的生成器
-    stream_response = get_stream_completion(prompt, temperature=0.9)
-    
-    # 逐步接收流式数据并显示
-    for chunk in stream_response:
-        content_chunk = chunk.choices[0].delta.content
-        st.session_state[response_key] += content_chunk
-        assistant_container.markdown(f"{ICON_AI} {st.session_state[response_key]}")
-    
-    # 保存并显示已经完成的回复
-    append_and_show("assistant", st.session_state[response_key], assistant_container)
+    # 接受用户输入的提示词，并调用大模型API获得反馈
+    if prompt := st.chat_input():
+        user_container = st.empty()  # 用户消息的动态区域
+        assistant_container = st.empty()  # 助手消息的动态区域
+        
+        append_and_show("user", prompt, user_container)
+        
+        # 初始化回复内容为空
+        assistant_response = ""
+        
+        # 在会话状态中创建或重置assistant的响应
+        response_key = "assistant_response"
+        st.session_state[response_key] = ""
+        
+        # 获取流式输出的生成器
+        stream_response = get_stream_completion(prompt, temperature=0.9)
+        
+        # 逐步接收流式数据并显示
+        for chunk in stream_response:
+            content_chunk = chunk.choices[0].delta.content
+            st.session_state[response_key] += content_chunk
+            assistant_container.markdown(f"{ICON_AI} {st.session_state[response_key]}")
+        
+        # 保存并显示已经完成的回复
+        append_and_show("assistant", st.session_state[response_key], assistant_container)
