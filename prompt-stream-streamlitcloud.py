@@ -21,7 +21,7 @@ def get_stream_completion(prompt, model="glm-4", temperature=0.01):
 
 def check_password():      
     # 预设的密码  
-    correct_password = "llssys57"  
+    correct_password = st.secrets["password"] 
     #返回值
     ret = False 
     
