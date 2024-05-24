@@ -11,7 +11,10 @@ if api_key is None:
 client = ZhipuAI(api_key=api_key)
 
 def get_stream_completion(prompt, model="glm-4", temperature=0.01):
-    messages = [{"role": "user", "content": prompt}]
+    messages = [
+        {"role": "system", "content": "你的回复中如果包含LaTex表达式，则所有LaTex表达式前后必须加上'$'符号。"},
+        {"role": "user", "content": prompt}
+    ]
     response = client.chat.completions.create(
         model=model,
         messages=messages,
