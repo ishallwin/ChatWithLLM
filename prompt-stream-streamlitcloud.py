@@ -110,6 +110,11 @@ def main():
         for chunk in stream_response:
             content_chunk = chunk.choices[0].delta.content
             st.session_state[response_key] += content_chunk
+            # 转换Latex表达式首尾符号
+            strtmp = st.session_state[response_key]
+            strtmp = strtmp.replace("\\[", "$$").replace("\\]", "$$")
+            strtmp = strtmp.replace("\\(", "$").replace("\\)", "$")
+            st.session_state[response_key] = strtmp
             assistant_container.markdown(f"{ICON_AI} {st.session_state[response_key]}")
         
         # 保存并显示已经完成的回复
